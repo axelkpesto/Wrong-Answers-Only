@@ -49,7 +49,6 @@ io.on('connection', (socket) => {
     io.emit('userID',(newID()));
     console.log("Number of Users: " + userNum);
     console.log("User ID List: " + userList);
-    userNum++;
     io.emit('userNumber',io.engine.clientsCount);
     io.emit('currentQuestion',currentQuestion);
 
@@ -66,6 +65,12 @@ io.on('connection', (socket) => {
             allReady = true;
         }
     });
+
+    socket.on('disconnect',(socket) => {
+
+        io.emit('userNumber',io.engine.clientsCount);
+        console.log('a user disconnected, current number is at' + userNum);
+    });
 });
 
 function newID() {
@@ -77,16 +82,6 @@ function newID() {
     } return random;
 }
 
-//Never calling disconnection from socket
-//https://stackoverflow.com/questions/17287330/socket-io-handling-disconnect-event
-//Here are some good stackoverflow ideas, most likely disconnect function needs to be called inside of the original one
-io.on('disconnect',(socket) => {
-
-    userNum--;
-    io.emit('userNumber',io.engine.clientsCount);
-    //Console log doesnt appear, impossible to debug
-    console.log('a user disconnected, current number is at' + userNum);
-});
 
 function isUpperCase(str) {
     return str === str.toUpperCase();
