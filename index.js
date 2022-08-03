@@ -13,11 +13,10 @@ let currentQuestion = "";
 let currentAnswer = "";
 
 let allReady = false;
-let readyList = [];
+
+let currentSet = [];
 
 let answerList = [];
-
-
 
 let questions = {
     "What color binder is Math?":[["BLUE"],false],
@@ -62,18 +61,11 @@ io.on('connection', async (socket) => {
         socket.data.username = message;
         console.log(socket.data.username);
         console.log(socket.id);
-
     });
 
     socket.on('readyCheck', async (ready) => {
-        if(ready) {
-            readyList.push(ready);
-        }
-
-        if(readyList.length===io.engine.clientsCount) {
-            allReady = true;
-            newQuestion();
-        }
+        socket.data.ready = ready;
+        checkReady();
     });
 
     socket.on("answer", async (answer) => {
@@ -81,6 +73,16 @@ io.on('connection', async (socket) => {
         answerList.push([socket.data.answer,socket.data.username]);
         io.emit("answerFromUser",(answerList));
     });
+
+    socket.on('vote', (vote) => {
+        let clients = await io.sockets.clients();
+        for(client of clients) {
+            if(vote===client.data.username) {
+                client.data.votes += 1;
+            }
+        }
+    });
+    
 
     socket.on('disconnect',(socket) => {
         io.emit('userNumber',io.engine.clientsCount);
@@ -90,6 +92,27 @@ io.on('connection', async (socket) => {
 
 function isUpperCase(str) {
     return str === str.toUpperCase();
+}
+
+async function checkReady() {
+    let clients = await io.sockets.clients();
+    for(client of clients) {
+        if(!client.data.ready) {
+            allReady = false;
+            return allReady;
+        }
+    } 
+
+    allReady = true;
+    return allReady;
+}
+
+async function tally() {
+    let clients = await io.sockets.clients();
+    for(client of clients) {
+        client.data.poits = client.data.votes * 100;
+        console.log(client.data.poits);
+    }
 }
 
 function checkAnswer(answer) {
