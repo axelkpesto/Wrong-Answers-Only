@@ -50,7 +50,7 @@ io.on('connection', (socket) => {
     console.log("Number of Users: " + userNum);
     console.log("User ID List: " + userList);
     userNum++;
-    io.emit('userNumber',userNum);
+    io.emit('userNumber',io.engine.clientsCount);
     io.emit('currentQuestion',currentQuestion);
 
     socket.on('name', (message) => {
@@ -83,9 +83,9 @@ function newID() {
 io.on('disconnect',(socket) => {
 
     userNum--;
-    io.emit('userNumber',userNum);
+    io.emit('userNumber',io.engine.clientsCount);
     //Console log doesnt appear, impossible to debug
-    console.log('a user connected, current number is at' + userNum);
+    console.log('a user disconnected, current number is at' + userNum);
 });
 
 function isUpperCase(str) {
