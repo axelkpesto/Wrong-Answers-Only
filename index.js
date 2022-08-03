@@ -57,14 +57,13 @@ io.on('connection', async (socket) => {
     io.emit('userNumber',io.engine.clientsCount);
 
     socket.on('name', async (message) => {
-        let clientSockets = await io.fetchSockets();
         socket.data.username = message;
         console.log(socket.data.username);
         console.log(socket.id);
 
     });
 
-    socket.on('readyCheck',(ready) => {
+    socket.on('readyCheck', async (ready) => {
         if(ready) {
             readyList.push(ready);
         }
@@ -73,6 +72,7 @@ io.on('connection', async (socket) => {
             allReady = true;
         }
 
+        let clientSockets = await io.fetchSockets();
         for(clientSocket in clientSockets) {
             console.log(clientSocket.id);
             console.log(clientSocket.data);
