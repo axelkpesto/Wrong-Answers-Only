@@ -41,10 +41,14 @@ let questions = {
     "Why can't T-Rex's clap their hands?":[["they're EXTINCT"],false],
 }
 
+//Keep track of who says what
+
 io.on('connection', (socket) => {
     console.log('a user connected');
 
     io.emit('userID',(newID()));
+    console.log("Number of Users: " + userNum);
+    console.log("User ID List: " + userList);
     userNum++;
     io.emit('userNumber',userNum);
     io.emit('currentQuestion',currentQuestion);
@@ -76,7 +80,7 @@ function newID() {
 //Never calling disconnection from socket
 //https://stackoverflow.com/questions/17287330/socket-io-handling-disconnect-event
 //Here are some good stackoverflow ideas, most likely disconnect function needs to be called inside of the original one
-io.on('disconnection',(socket) => {
+io.on('disconnect',(socket) => {
 
     userNum--;
     io.emit('userNumber',userNum);
