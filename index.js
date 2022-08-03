@@ -61,7 +61,7 @@ io.on('connection', async (socket) => {
         socket.data.username = message;
         for(clientSocket in clientSockets) {
             console.log(clientSocket.id);
-            console.log(clientSocket.data.username);
+            console.log(clientSocket.data);
         }
     });
 
