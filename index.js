@@ -75,7 +75,7 @@ io.on('connection', async (socket) => {
         let clientSockets = await io.fetchSockets();
         for(clientSocket in clientSockets) {
             console.log(clientSocket.id);
-            console.log(clientSocket.data);
+            console.log(clientSocket.data.username);
         }
     });
 
