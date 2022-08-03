@@ -15,7 +15,9 @@ let currentAnswer = "";
 let allReady = false;
 let readyList = [];
 
-let userList = [];
+let answerList = [];
+
+
 
 let questions = {
     "What color binder is Math?":[["BLUE"],false],
@@ -70,28 +72,20 @@ io.on('connection', async (socket) => {
 
         if(readyList.length===io.engine.clientsCount) {
             allReady = true;
+            newQuestion();
         }
+    });
 
-        let clientSockets = await io.fetchSockets();
-        for(clientSocket of clientSockets) {
-            console.log(clientSocket.id);
-            console.log(clientSocket.data);
-        }
+    socket.on("answer", async (answer) => {
+        socket.data.answer = answer;
+        answerList.push([socket.data.answer,socket.data.username]);
+        io.emit("answerFromUser",(answerList));
     });
 
     socket.on('disconnect',(socket) => {
         io.emit('userNumber',io.engine.clientsCount);
     });
 });
-
-function newID() {
-    let random = Math.floor(Math.random() * 127);
-    for(let i=0; i<userList.length; i++) {
-        if(userList[i]===random) {
-            newID();
-        }
-    } return random;
-}
 
 
 function isUpperCase(str) {
@@ -110,6 +104,7 @@ function checkAnswer(answer) {
 }
 
 function newQuestion() {
+    answerList= [];
     currentSet = getRandQuestion()
     currentQuestion = currentSet[0];
     currentAnswer = currentSet[1];
