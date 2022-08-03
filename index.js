@@ -67,7 +67,7 @@ io.on('connection', async (socket) => {
     });
 
     socket.on('vote', async (vote) => {
-        let clients = await io.sockets.clients();
+        let clients = await io.fetchSockets();
         for(client of clients) {
             if(vote===client.data.username) {
                 client.data.votes += 1;
@@ -87,7 +87,7 @@ function isUpperCase(str) {
 }
 
 async function checkReady() {
-    let clients = await io.sockets.clients();
+    let clients = await io.fetchSockets();
     for(client of clients) {
         if(!client.data.ready) {
             allReady = false;
@@ -100,7 +100,7 @@ async function checkReady() {
 }
 
 async function tally() {
-    let clients = await io.sockets.clients();
+    let clients = await io.fetchSockets();
     for(client of clients) {
         client.data.poits = client.data.votes * 100;
         console.log(client.data.poits);
