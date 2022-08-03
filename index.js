@@ -1,3 +1,8 @@
+//git add .
+//git status
+//git commit -m "message"
+//git push -u origin master
+
 const http = require('http').createServer();
 
 const io = require('socket.io')(http, {
@@ -34,7 +39,7 @@ let questions = {
     "What is celebrated on the fourth of July?":[["INDEPENDANCE DAY"],false],
     "What is the best wood in Minecraft?":[["OAK"],false],
     "Why can't T-Rex's clap their hands?":[["they're EXTINCT"],false],
-  }
+}
 
 io.on('connection', (socket) => {
     console.log('a user connected');
@@ -58,8 +63,10 @@ io.on('connection', (socket) => {
 });
 
 io.on('disconnection',(socket) => {
+
     userNum--;
     io.emit('userNumber',userNum);
+    console.log('a user connected, current number is at' + userNum);
 });
 
 function isUpperCase(str) {
@@ -100,7 +107,3 @@ http.listen((process.env.PORT || 8080), () => console.log('listening on http://l
 
 
 
-//git add .
-//git status
-//git commit -m "message"
-//git push -u origin master
