@@ -43,12 +43,14 @@ let questions = {
 
 io.on('connection', (socket) => {
     console.log('a user connected');
+
+    io.emit('userID',(newID()));
     userNum++;
     io.emit('userNumber',userNum);
     io.emit('currentQuestion',currentQuestion);
 
     socket.on('name', (message) => {
-        userList.push([message,userNum]);
+        // userList.push([message,userNum]);
     });
 
     socket.on('readyCheck',(ready) => {
@@ -62,10 +64,23 @@ io.on('connection', (socket) => {
     });
 });
 
+function newID() {
+    let random = Math.floor(Math.random() * 127);
+    if(userList.contains(random)) {
+        newID();
+    } else {
+        return random;
+    }
+}
+
+//Never calling disconnection from socket
+//https://stackoverflow.com/questions/17287330/socket-io-handling-disconnect-event
+//Here are some good stackoverflow ideas, most likely disconnect function needs to be called inside of the original one
 io.on('disconnection',(socket) => {
 
     userNum--;
     io.emit('userNumber',userNum);
+    //Console log doesnt appear, impossible to debug
     console.log('a user connected, current number is at' + userNum);
 });
 
