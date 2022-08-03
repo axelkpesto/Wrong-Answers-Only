@@ -41,14 +41,6 @@ let questions = {
     "Why can't T-Rex's clap their hands?":[["they're EXTINCT"],false],
 }
 
-//Socket io keeps track, should assign ids automatically
-
-
-//We have the client send their answer to the question
-//Server recieves who sent and what their their answer was
-//When its time to vote:
-//Every client recieves username
-
 io.on('connection', async (socket) => {
 
     console.log('a user connected');
@@ -74,7 +66,7 @@ io.on('connection', async (socket) => {
         io.emit("answerFromUser",(answerList));
     });
 
-    socket.on('vote', (vote) => {
+    socket.on('vote', async (vote) => {
         let clients = await io.sockets.clients();
         for(client of clients) {
             if(vote===client.data.username) {
