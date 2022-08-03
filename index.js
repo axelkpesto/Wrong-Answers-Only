@@ -9,7 +9,6 @@ const io = require('socket.io')(http, {
     cors: { origin: "*" }
 });
 
-let userNum = 0;
 let currentQuestion = "";
 let currentAnswer = "";
 
@@ -41,19 +40,30 @@ let questions = {
     "Why can't T-Rex's clap their hands?":[["they're EXTINCT"],false],
 }
 
-//Keep track of who says what
+//Socket io keeps track, should assign ids automatically
+const sockets = await io.fetchSockets();
 
-io.on('connection', (socket) => {
+
+//We have the client send their answer to the question
+//Server recieves who sent and what their their answer was
+//When its time to vote:
+//Every client recieves username
+
+io.on('connection', async (socket) => {
+
     console.log('a user connected');
+    console.log("UserCount: " + io.engine.clientsCount);
 
-    io.emit('userID',(newID()));
-    console.log("Number of Users: " + userNum);
-    console.log("User ID List: " + userList);
+
     io.emit('userNumber',io.engine.clientsCount);
-    io.emit('currentQuestion',currentQuestion);
 
     socket.on('name', (message) => {
-        // userList.push([message,userNum]);
+        let clientSockets = await io.fetchSockets();
+        socket.data.username = message;
+        for(clientSocket in clientSockets) {
+            console.log(clientSocket.id);
+            console.log(clientSocket.data.username);
+        }
     });
 
     socket.on('readyCheck',(ready) => {
@@ -61,15 +71,13 @@ io.on('connection', (socket) => {
             readyList.push(ready);
         }
 
-        if(readyList.length===userNum) {
+        if(readyList.length===io.engine.clientsCount) {
             allReady = true;
         }
     });
 
     socket.on('disconnect',(socket) => {
-
         io.emit('userNumber',io.engine.clientsCount);
-        console.log('a user disconnected, current number is at' + userNum);
     });
 });
 
