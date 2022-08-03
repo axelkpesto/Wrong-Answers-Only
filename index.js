@@ -41,7 +41,6 @@ let questions = {
 }
 
 //Socket io keeps track, should assign ids automatically
-const sockets = await io.fetchSockets();
 
 
 //We have the client send their answer to the question
@@ -57,7 +56,7 @@ io.on('connection', async (socket) => {
 
     io.emit('userNumber',io.engine.clientsCount);
 
-    socket.on('name', (message) => {
+    socket.on('name', async (message) => {
         let clientSockets = await io.fetchSockets();
         socket.data.username = message;
         for(clientSocket in clientSockets) {
