@@ -66,11 +66,11 @@ io.on('connection', (socket) => {
 
 function newID() {
     let random = Math.floor(Math.random() * 127);
-    if(userList.contains(random)) {
-        newID();
-    } else {
-        return random;
-    }
+    for(let i=0; i<userList.length; i++) {
+        if(userList[i]===random) {
+            newID();
+        }
+    } return random;
 }
 
 //Never calling disconnection from socket
