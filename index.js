@@ -167,8 +167,8 @@ function getRandQuestion() {
     let random = Math.floor(Math.random() * values.length)
     let randomQuestion = values[random];
     console.log(randomQuestion);
-    console.log(values[randomQuestion]);
-    console.log(values[randomQuestion][1]);
+    console.log(questions[randomQuestion]);
+    console.log(questions[randomQuestion][1]);
     if(values[randomQuestion][1]) {
         getRandQuestion();
     } else {
