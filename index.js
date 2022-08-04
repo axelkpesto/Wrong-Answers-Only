@@ -167,14 +167,11 @@ function getRandQuestion() {
     const values = Object.keys(questions);
     let random = Math.floor(Math.random() * values.length)
     let randomQuestion = values[random];
-    console.log(randomQuestion);
-    console.log(questions[randomQuestion]);
-    console.log(questions[randomQuestion][1]);
-    if(values[randomQuestion][1]) {
+    if(questions[randomQuestion][1]) {
         getRandQuestion();
     } else {
-        currentSet[randomQuestion][1] = true;
-        return [randomQuestion, currentSet[randomQuestion][0]];
+        questions[randomQuestion][1] = true;
+        return [randomQuestion, questions[randomQuestion][0]];
     }
 }
 
