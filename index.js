@@ -57,7 +57,7 @@ io.on('connection', async (socket) => {
 
     socket.on('readyCheck', async (ready) => {
         socket.data.ready = ready;
-        checkReady();
+        io.emit('allReady',(checkReady()));
     });
 
     socket.on("answer", async (answer) => {
@@ -75,7 +75,7 @@ io.on('connection', async (socket) => {
         }
     });
 
-    socket.on('kicked', () => {
+    socket.on('kicked', (time) => {
         socket.disconnect();
         console.log("UserCount: " + io.engine.clientsCount);
     });
