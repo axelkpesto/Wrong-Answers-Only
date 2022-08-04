@@ -48,8 +48,6 @@ io.on('connection', async (socket) => {
 
     console.log('a user connected');
     console.log("UserCount: " + io.engine.clientsCount);
-    newQuestion();
-
 
     io.emit('userNumber',io.engine.clientsCount);
 
