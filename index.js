@@ -41,6 +41,8 @@ let questions = {
     "Why can't T-Rex's clap their hands?":[["they're EXTINCT"],false],
 }
 
+//Want to limit number of people to 10
+
 io.on('connection', async (socket) => {
 
     console.log('a user connected');
@@ -78,12 +80,11 @@ io.on('connection', async (socket) => {
 
     socket.on('kicked', (time) => {
         socket.disconnect();
+        io.emit('userNumber',io.engine.clientsCount);
         console.log("UserCount: " + io.engine.clientsCount) + ". Player kicked.";
     });
-    
 
     socket.on('disconnect',(socket) => {
-        io.emit('userNumber',io.engine.clientsCount);
         console.log("UserCount: " + io.engine.clientsCount + ". Player Disconnected.");
     });
 });
@@ -101,7 +102,8 @@ async function checkReady() {
             return allReady;
         }
     } 
-
+    
+    console.log("everyone is ready");
     allReady = true;
     return allReady;
 }
@@ -148,6 +150,4 @@ function getRandQuestion() {
 }
 
 http.listen((process.env.PORT || 8080), () => console.log('listening on http://localhost:8080'));
-
-
 
