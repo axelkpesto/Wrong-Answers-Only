@@ -53,6 +53,9 @@ io.on('connection', async (socket) => {
     io.emit('userNumber',io.engine.clientsCount);
 
     socket.on('name', async (message) => {
+        if(message==="Username") {
+            message = socket.id;
+        }
         socket.data.username = message;
         console.log(socket.data.username);
     });
