@@ -77,11 +77,13 @@ io.on('connection', async (socket) => {
 
     socket.on('kicked', () => {
         socket.disconnect();
+        console.log("UserCount: " + io.engine.clientsCount);
     });
     
 
     socket.on('disconnect',(socket) => {
         io.emit('userNumber',io.engine.clientsCount);
+        console.log("UserCount: " + io.engine.clientsCount);
     });
 });
 
