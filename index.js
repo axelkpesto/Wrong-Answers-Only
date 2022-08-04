@@ -46,6 +46,7 @@ let questions = {
 
 io.on('connection', async (socket) => {
 
+
     console.log('a user connected');
     console.log("UserCount: " + io.engine.clientsCount);
 
@@ -56,6 +57,7 @@ io.on('connection', async (socket) => {
             message = socket.id;
         }
         socket.data.username = message;
+        answerList = [];
         console.log(socket.data.username);
     });
 
@@ -83,11 +85,10 @@ io.on('connection', async (socket) => {
 
     socket.on('kicked', (time) => {
         socket.disconnect();
-        io.emit('userNumber',io.engine.clientsCount);
-        console.log("UserCount: " + io.engine.clientsCount) + ". Player kicked.";
     });
 
     socket.on('disconnect',(socket) => {
+        io.emit('userNumber',io.engine.clientsCount);
         console.log("UserCount: " + io.engine.clientsCount + ". Player Disconnected.");
     });
 });
