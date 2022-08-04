@@ -156,6 +156,7 @@ function newQuestion() {
     currentQuestion = currentSet[0];
     currentAnswer = currentSet[1];
     io.emit('currentQuestion',currentQuestion);
+    console.log(currentQuestion);
 }
 
 function getRandQuestion() {
