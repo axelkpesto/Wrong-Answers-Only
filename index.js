@@ -167,9 +167,9 @@ function getRandQuestion() {
     let random = Math.floor(Math.random() * values.length)
     let randomQuestion = values[random];
     console.log(randomQuestion);
-    console.log(currentSet[randomQuestion]);
-    console.log(currentSet[randomQuestion][1]);
-    if(currentSet[randomQuestion][1]) {
+    console.log(values[randomQuestion]);
+    console.log(values[randomQuestion][1]);
+    if(values[randomQuestion][1]) {
         getRandQuestion();
     } else {
         currentSet[randomQuestion][1] = true;
