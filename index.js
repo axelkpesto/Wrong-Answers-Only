@@ -13,6 +13,7 @@ let currentQuestion = "";
 let currentAnswer = "";
 
 let allReady = false;
+let allVoted = false;
 
 let currentSet = [];
 
@@ -59,7 +60,6 @@ io.on('connection', async (socket) => {
     socket.on('readyCheck', async (ready) => {
         socket.data.ready = ready;
         io.emit('allReady',(checkReady()));
-        console.log("ready?");
     });
 
     socket.on("answer", async (answer) => {
@@ -71,6 +71,7 @@ io.on('connection', async (socket) => {
 
     socket.on('vote', async (vote) => {
         let clients = await io.fetchSockets();
+        socket.data.voted = true;
         for(client of clients) {
             if(vote===client.data.username) {
                 client.data.votes += 1;
@@ -89,6 +90,16 @@ io.on('connection', async (socket) => {
     });
 });
 
+//If everyones ready"
+//stop people from connecting
+//Sends out the question
+//People answer
+//As they answer the questions show up on the tiles
+//Once everyone answers the button for voting shows up
+//Once everyone votes the next question appears
+//Once 10 questions go by the tally for points is calculated
+//Leaderboard
+
 
 function isUpperCase(str) {
     return str === str.toUpperCase();
@@ -104,11 +115,21 @@ async function checkReady() {
     } 
     
     console.log("everyone is ready");
+    newQuestion();
     allReady = true;
     return allReady;
 }
 
-
+async function checkVoted() {
+    let clients = await io.fetchSockets();
+    for(client of clients) {
+        if(!client.data.voted) {
+            return;
+        }
+    } 
+    
+    newQuestion();
+}
 
 async function tally() {
     let clients = await io.fetchSockets();
@@ -134,9 +155,9 @@ function newQuestion() {
     currentSet = getRandQuestion()
     currentQuestion = currentSet[0];
     currentAnswer = currentSet[1];
+    io.emit('currentQuestion',currentQuestion);
 }
 
-//Returns an unused random question
 function getRandQuestion() {
     const values = Object.keys(questions);
     let random = Math.floor(Math.random() * values.length)
