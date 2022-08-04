@@ -52,18 +52,19 @@ io.on('connection', async (socket) => {
     socket.on('name', async (message) => {
         socket.data.username = message;
         console.log(socket.data.username);
-        console.log(socket.id);
     });
 
     socket.on('readyCheck', async (ready) => {
         socket.data.ready = ready;
         io.emit('allReady',(checkReady()));
+        console.log("ready?");
     });
 
     socket.on("answer", async (answer) => {
         socket.data.answer = answer;
         answerList.push([socket.data.answer,socket.data.username]);
         io.emit("answerFromUser",(answerList));
+        console.log(answerList);
     });
 
     socket.on('vote', async (vote) => {
@@ -77,13 +78,13 @@ io.on('connection', async (socket) => {
 
     socket.on('kicked', (time) => {
         socket.disconnect();
-        console.log("UserCount: " + io.engine.clientsCount);
+        console.log("UserCount: " + io.engine.clientsCount) + ". Player kicked.";
     });
     
 
     socket.on('disconnect',(socket) => {
         io.emit('userNumber',io.engine.clientsCount);
-        console.log("UserCount: " + io.engine.clientsCount);
+        console.log("UserCount: " + io.engine.clientsCount + ". Player Disconnected.");
     });
 });
 
