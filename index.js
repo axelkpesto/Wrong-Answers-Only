@@ -165,7 +165,10 @@ function newQuestion() {
 function getRandQuestion() {
     const values = Object.keys(questions);
     let random = Math.floor(Math.random() * values.length)
-    let randomQuestion = values[random]
+    let randomQuestion = values[random];
+    console.log(randomQuestion);
+    console.log(currentSet[randomQuestion]);
+    console.log(currentSet[randomQuestion][1]);
     if(currentSet[randomQuestion][1]) {
         getRandQuestion();
     } else {
