@@ -92,10 +92,10 @@ io.on('connection', async (socket) => {
     });
 });
 
-//If everyones ready"
+//If everyones ready" (works)
 //stop people from connecting
-//Sends out the question
-//People answer
+//Sends out the question (works)
+//People answer (works)
 //As they answer the questions show up on the tiles
 //Once everyone answers the button for voting shows up
 //Once everyone votes the next question appears
@@ -153,7 +153,8 @@ function checkAnswer(answer) {
 }
 
 function newQuestion() {
-    answerList= [];
+    answerList = [];
+    console.log(answerList);
     currentSet = getRandQuestion()
     currentQuestion = currentSet[0];
     currentAnswer = currentSet[1];
