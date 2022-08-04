@@ -74,6 +74,10 @@ io.on('connection', async (socket) => {
             }
         }
     });
+
+    socket.on('kicked', () => {
+        socket.disconnect();
+    });
     
 
     socket.on('disconnect',(socket) => {
@@ -98,6 +102,8 @@ async function checkReady() {
     allReady = true;
     return allReady;
 }
+
+
 
 async function tally() {
     let clients = await io.fetchSockets();
