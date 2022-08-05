@@ -110,7 +110,7 @@ io.on('connection', async (socket) => {
 //People answer (works)
 //As they answer the questions show up on the tiles (check, but not resetting correctly)
 //Once everyone answers the button for voting shows up (check)
-//Once everyone votes the next question appears
+//Once everyone votes the next question appears (check)
 //Once 10 questions go by the tally for points is calculated
 //Leaderboard
 
@@ -162,9 +162,18 @@ function checkAnswer(answer) {
     } return true;
 }
 
+async function resetData() {
+    let clients = await io.fetchSockets();
+    for(client of clients) {
+        client.data.voted = false;
+        client.data.answer = "";
+    } 
+}
+
 function newQuestion() {
     console.log(askedQuestions);
     if(askedQuestions != 10) {
+        resetData();
         answerList = [];
         console.log(answerList);
         currentSet = getRandQuestion()
