@@ -15,6 +15,8 @@ let currentAnswer = "";
 let allReady = false;
 let allVoted = false;
 
+let askedQuestions = 0;
+
 let currentSet = [];
 
 let answerList = [];
@@ -69,8 +71,10 @@ io.on('connection', async (socket) => {
     socket.on("answer", async (answer) => {
         socket.data.answer = answer;
         answerList.push([socket.data.answer,socket.data.username]);
+        if(checkAnswer(socket.data.answer)) {
+            socket.data.passed++;
+        }
         io.emit("answerFromUser",(answerList));
-        console.log(answerList);
     });
 
     socket.on('vote', async (vote) => {
@@ -79,7 +83,14 @@ io.on('connection', async (socket) => {
         for(client of clients) {
             if(vote===client.data.username) {
                 client.data.votes += 1;
+                console.log(client.data.votes);
             }
+        }
+
+        checkVoted();
+
+        if(askedQuestions === 10) {
+            tally(socket);
         }
     });
 
@@ -97,8 +108,8 @@ io.on('connection', async (socket) => {
 //stop people from connecting
 //Sends out the question (works)
 //People answer (works)
-//As they answer the questions show up on the tiles
-//Once everyone answers the button for voting shows up
+//As they answer the questions show up on the tiles (check, but not resetting correctly)
+//Once everyone answers the button for voting shows up (check)
 //Once everyone votes the next question appears
 //Once 10 questions go by the tally for points is calculated
 //Leaderboard
@@ -134,12 +145,10 @@ async function checkVoted() {
     newQuestion();
 }
 
-async function tally() {
-    let clients = await io.fetchSockets();
-    for(client of clients) {
-        client.data.poits = client.data.votes * 100;
-        console.log(client.data.poits);
-    }
+async function tally(client) {
+    client.data.poits = (passed * client.data.votes * 100);
+    console.log(client.data.points);
+    io.emit('points',([client.data.username,client.data.points]));
 }
 
 function checkAnswer(answer) {
@@ -154,13 +163,16 @@ function checkAnswer(answer) {
 }
 
 function newQuestion() {
-    answerList = [];
-    console.log(answerList);
-    currentSet = getRandQuestion()
-    currentQuestion = currentSet[0];
-    currentAnswer = currentSet[1];
-    io.emit('currentQuestion',currentQuestion);
-    console.log(currentQuestion);
+    if(askedQuestions != 10) {
+        answerList = [];
+        console.log(answerList);
+        currentSet = getRandQuestion()
+        currentQuestion = currentSet[0];
+        currentAnswer = currentSet[1];
+        io.emit('currentQuestion',currentQuestion);
+        console.log(currentQuestion);
+        askedQuestions++;
+    }
 }
 
 function getRandQuestion() {
