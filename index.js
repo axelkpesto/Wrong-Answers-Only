@@ -163,6 +163,7 @@ function checkAnswer(answer) {
 }
 
 function newQuestion() {
+    console.log(askedQuestions);
     if(askedQuestions != 10) {
         answerList = [];
         console.log(answerList);
