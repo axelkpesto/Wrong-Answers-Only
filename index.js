@@ -155,7 +155,7 @@ function checkAnswer(answer) {
     for(let i=0; i<currentAnswer.length; i++) {
         let words = currentAnswer[i].split(" ");
         for(let i=0; i<words.length; i++) {
-            if(isUpperCase(words[i]) && answer.contains(words[i])) {
+            if(isUpperCase(words[i]) && answer === words[i]) {
                 return false;
             }
         }
