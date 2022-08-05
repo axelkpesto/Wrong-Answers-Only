@@ -1,26 +1,25 @@
-//git add .
-//git status
-//git commit -m "message"
-//git push -u origin master
-
 const http = require('http').createServer();
 
 const io = require('socket.io')(http, {
     cors: { origin: "*" }
 });
 
+//Strings
 let currentQuestion = "";
 let currentAnswer = "";
 
+//Booleans
 let allReady = false;
 let allVoted = false;
 
+//Integers
 let askedQuestions = 0;
 
+//Arrays
 let currentSet = [];
-
 let answerList = [];
 
+//Objects
 let questions = {
     "What color binder is Math?":[["BLUE"],false],
     "What is the worst subject?":[["COMPUTER SCIENCE"],false],
@@ -44,8 +43,7 @@ let questions = {
     "Why can't T-Rex's clap their hands?":[["they're EXTINCT"],false],
 }
 
-//Want to limit number of people to 10
-
+//Upon connection, 
 io.on('connection', async (socket) => {
 
 
@@ -54,6 +52,7 @@ io.on('connection', async (socket) => {
 
     io.emit('userNumber',io.engine.clientsCount);
 
+    //Set username to passed through message
     socket.on('name', async (message) => {
         if(message==="Username") {
             message = socket.id;
@@ -63,11 +62,13 @@ io.on('connection', async (socket) => {
         console.log(socket.data.username);
     });
 
+    //set user readyness to passed through variable
     socket.on('readyCheck', async (ready) => {
         socket.data.ready = ready;
         io.emit('allReady',(checkReady()));
     });
 
+    //set user answer to passed through variable
     socket.on("answer", async (answer) => {
         socket.data.answer = answer;
         answerList.push([socket.data.answer,socket.data.username]);
@@ -77,6 +78,7 @@ io.on('connection', async (socket) => {
         io.emit("answerFromUser",(answerList));
     });
 
+    //set user vote to passed through variable
     socket.on('vote', async (vote) => {
         let clients = await io.fetchSockets();
         socket.data.voted = true;
@@ -94,31 +96,24 @@ io.on('connection', async (socket) => {
         }
     });
 
+    //kick user
     socket.on('kicked', (time) => {
         socket.disconnect();
     });
 
+    //disconnect user
     socket.on('disconnect',(socket) => {
         io.emit('userNumber',io.engine.clientsCount);
         console.log("UserCount: " + io.engine.clientsCount + ". Player Disconnected.");
     });
 });
 
-//If everyones ready" (works)
-//stop people from connecting
-//Sends out the question (works)
-//People answer (works)
-//As they answer the questions show up on the tiles (check, but not resetting correctly)
-//Once everyone answers the button for voting shows up (check)
-//Once everyone votes the next question appears (check)
-//Once 10 questions go by the tally for points is calculated
-//Leaderboard
-
-
+//Check if passed through string is uppercase
 function isUpperCase(str) {
     return str === str.toUpperCase();
 }
 
+//Check if all users are ready
 async function checkReady() {
     let clients = await io.fetchSockets();
     for(client of clients) {
@@ -134,6 +129,7 @@ async function checkReady() {
     return allReady;
 }
 
+//Check if all users voted
 async function checkVoted() {
     let clients = await io.fetchSockets();
     for(client of clients) {
@@ -145,12 +141,15 @@ async function checkVoted() {
     newQuestion();
 }
 
+//Tally points
 async function tally(client) {
-    client.data.poits = (passed * client.data.votes * 100);
+    client.data.points = (passed * client.data.votes * 100);
+    console.log(client.data.username);
     console.log(client.data.points);
     io.emit('points',([client.data.username,client.data.points]));
 }
 
+//Check passed through answer
 function checkAnswer(answer) {
     for(let i=0; i<currentAnswer.length; i++) {
         let words = currentAnswer[i].split(" ");
@@ -162,20 +161,20 @@ function checkAnswer(answer) {
     } return true;
 }
 
+//Reset data for all users
 async function resetData() {
     let clients = await io.fetchSockets();
     for(client of clients) {
         client.data.voted = false;
         client.data.answer = "";
     } 
+    answerList = [];
 }
 
+//Send out question
 function newQuestion() {
-    console.log(askedQuestions);
-    if(askedQuestions != 10) {
+    if(askedQuestions != 5) {
         resetData();
-        answerList = [];
-        console.log(answerList);
         currentSet = getRandQuestion()
         currentQuestion = currentSet[0];
         currentAnswer = currentSet[1];
@@ -185,6 +184,7 @@ function newQuestion() {
     }
 }
 
+//Get a question at random from questions
 function getRandQuestion() {
     const values = Object.keys(questions);
     let random = Math.floor(Math.random() * values.length)
