@@ -180,11 +180,13 @@ function newQuestion() {
     if(askedQuestions != 5) {
         resetData();
         currentSet = getRandQuestion()
-        currentQuestion = currentSet[0];
-        currentAnswer = currentSet[1];
-        io.emit('currentQuestion',currentQuestion);
-        console.log(currentQuestion);
-        askedQuestions++;
+        if(currentSet[0]!=undefined && currentSet[1]!=undefined) {
+            currentQuestion = currentSet[0];
+            currentAnswer = currentSet[1];
+            io.emit('currentQuestion',currentQuestion);
+            console.log(currentQuestion);
+            askedQuestions++;
+        }
     }
 }
 
