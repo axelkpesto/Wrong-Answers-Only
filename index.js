@@ -90,9 +90,6 @@ io.on('connection', async (socket) => {
         }
 
         checkVoted();
-        if(askedQuestions === 5) {
-            tally();
-        }
 
         
     });
@@ -176,8 +173,9 @@ async function resetData() {
 }
 
 //Send out question
-function newQuestion() {
-    if(askedQuestions != 5) {
+async function newQuestion() {
+    if(askedQuestions < 5) {
+        askedQuestions++;
         resetData();
         currentSet = getRandQuestion()
         if(currentSet[0]!=undefined && currentSet[1]!=undefined) {
@@ -185,8 +183,9 @@ function newQuestion() {
             currentAnswer = currentSet[1];
             io.emit('currentQuestion',currentQuestion);
             console.log(currentQuestion);
-            askedQuestions++;
         }
+    } else {
+        tally();
     }
 }
 
