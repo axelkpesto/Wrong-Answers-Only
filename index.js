@@ -46,7 +46,6 @@ let questions = {
 //Upon connection, 
 io.on('connection', async (socket) => {
 
-
     console.log('a user connected');
     console.log("UserCount: " + io.engine.clientsCount);
 
@@ -143,7 +142,7 @@ async function checkVoted() {
 async function tally() {
     let clients = await io.fetchSockets();
     for(client of clients) {
-        client.data.points = (passed * client.data.votes * 100);
+        client.data.points = (client.data.passed * client.data.votes * 100);
         console.log(client.data.username);
         console.log(client.data.points);
         io.emit('points',([client.data.username,client.data.points]));
