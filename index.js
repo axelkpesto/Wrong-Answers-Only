@@ -178,11 +178,13 @@ async function newQuestion() {
         askedQuestions++;
         resetData();
         currentSet = getRandQuestion()
-        if(currentSet[0]!=undefined && currentSet[1]!=undefined) {
+        if(currentSet != undefined && currentSet[0]!=undefined && currentSet[1]!=undefined) {
             currentQuestion = currentSet[0];
             currentAnswer = currentSet[1];
             io.emit('currentQuestion',currentQuestion);
             console.log(currentQuestion);
+        } else {
+            tally();
         }
     } else {
         tally();
