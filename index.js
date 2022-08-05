@@ -90,10 +90,11 @@ io.on('connection', async (socket) => {
         }
 
         checkVoted();
-
-        if(askedQuestions === 10) {
-            tally(socket);
+        if(askedQuestions === 5) {
+            tally();
         }
+
+        
     });
 
     //kick user
@@ -142,11 +143,14 @@ async function checkVoted() {
 }
 
 //Tally points
-async function tally(client) {
-    client.data.points = (passed * client.data.votes * 100);
-    console.log(client.data.username);
-    console.log(client.data.points);
-    io.emit('points',([client.data.username,client.data.points]));
+async function tally() {
+    let clients = await io.fetchSockets();
+    for(client of clients) {
+        client.data.points = (passed * client.data.votes * 100);
+        console.log(client.data.username);
+        console.log(client.data.points);
+        io.emit('points',([client.data.username,client.data.points]));
+    }
 }
 
 //Check passed through answer
