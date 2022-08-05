@@ -180,7 +180,8 @@ async function newQuestion() {
     if(askedQuestions < 5) {
         askedQuestions++;
         resetData();
-        currentSet = getRandQuestion()
+        currentSet = getRandQuestion();
+        console.log(currentSet);
         if(currentSet != undefined && currentSet[0]!=undefined && currentSet[1]!=undefined) {
             currentQuestion = currentSet[0];
             currentAnswer = currentSet[1];
