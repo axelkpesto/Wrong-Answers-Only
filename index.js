@@ -46,6 +46,10 @@ let questions = {
 //Upon connection, 
 io.on('connection', async (socket) => {
 
+    socket.data.votes = 0;
+    socket.data.points = 0;
+    socket.data.passed = 0;
+
     console.log('a user connected');
     console.log("UserCount: " + io.engine.clientsCount);
 
