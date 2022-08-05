@@ -142,9 +142,9 @@ async function checkVoted() {
 async function tally() {
     let clients = await io.fetchSockets();
     for(client of clients) {
-        client.data.points = (client.data.passed * client.data.votes * 100);
-        console.log(client.data.username);
-        console.log(client.data.points);
+        console.log(client.data.passed);
+        console.log(client.data.votes);
+        client.data.points = ((1+client.data.passed) * client.data.votes * 100);
         io.emit('points',([client.data.username,client.data.points]));
     }
 }
